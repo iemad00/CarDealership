@@ -11,7 +11,8 @@ using System.Text;
 namespace CarDealership.Controllers;
 
 [ApiController]
-[Route("api/auth")]
+[Route("auth")]
+[ApiVersion("1.0")]
 public class UserAuthController : ControllerBase
 {
     private readonly ApplicationDbContext _context;

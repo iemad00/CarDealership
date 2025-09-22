@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CarDealership.Data;
 using CarDealership.Services;
+using CarDealership.Extensions;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,7 +41,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddControllers();
+// Add API versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
+
+// Add controllers with global route prefix
+builder.Services.AddControllers(options =>
+{
+    options.UseGeneralRoutePrefix("api/v{version:apiVersion}");
+});
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
