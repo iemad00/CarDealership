@@ -128,3 +128,13 @@
 /Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/emad/Documents/jyad/CarDealership/obj/Debug/net9.0/CarDealership.sourcelink.json
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/Pipelines.Sockets.Unofficial.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/StackExchange.Redis.dll
+/Users/emad/Documents/jyad/CarDealership/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll

@@ -17,5 +17,15 @@ services:
             - ./docker/mysql/init:/docker-entrypoint-initdb.d
         command: --default-authentication-plugin=mysql_native_password
 
+    redis:
+        image: redis:7-alpine
+        container_name: cardealership-redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+
 volumes:
     mysql_data:
+    redis_data:

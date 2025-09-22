@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarDealership.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250922174356_passcode")]
-    partial class passcode
+    [Migration("20250922182405_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,14 +78,14 @@ namespace CarDealership.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PhoneNumber")
+                    b.HasIndex("Phone")
                         .IsUnique();
 
                     b.ToTable("Users");

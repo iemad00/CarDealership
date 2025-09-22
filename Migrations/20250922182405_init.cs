@@ -7,14 +7,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CarDealership.Migrations
 {
     /// <inheritdoc />
-    public partial class passcode : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "PasscodeHash",
-                table: "Users");
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Passcodes",
@@ -48,6 +64,12 @@ namespace CarDealership.Migrations
                 table: "Passcodes",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Phone",
+                table: "Users",
+                column: "Phone",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -56,12 +78,8 @@ namespace CarDealership.Migrations
             migrationBuilder.DropTable(
                 name: "Passcodes");
 
-            migrationBuilder.AddColumn<string>(
-                name: "PasscodeHash",
-                table: "Users",
-                type: "longtext",
-                nullable: true)
-                .Annotation("MySql:CharSet", "utf8mb4");
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

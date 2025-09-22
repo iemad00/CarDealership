@@ -19,8 +19,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.PhoneNumber).IsUnique();
-            entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(20);
+            entity.HasIndex(e => e.Phone).IsUnique();
+            entity.Property(e => e.Phone).IsRequired().HasMaxLength(20);
         });
 
         modelBuilder.Entity<Passcode>(entity =>
