@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0v7Up0aq0uI=",
+  "success": true,
+  "projectFilePath": "/Users/emad/Documents/jyad/CarDealership/CarDealership.csproj",
+  "expectedPackageFiles": [
+    "/Users/emad/.nuget/packages/microsoft.aspnetcore.openapi/9.0.9/microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
+    "/Users/emad/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
