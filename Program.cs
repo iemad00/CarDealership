@@ -23,7 +23,17 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
 // Add custom services
 builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasscodeHashService, PasscodeHashService>();
+builder.Services.AddScoped<CarDealership.Services.User.IAuthService, CarDealership.Services.User.AuthService>();
+builder.Services.AddScoped<CarDealership.Services.Admin.IAdminAuthService, CarDealership.Services.Admin.AdminAuthService>();
+builder.Services.AddScoped<CarDealership.Services.Admin.IAdminManagementService, CarDealership.Services.Admin.AdminManagementService>();
+// Add seeding services
+builder.Services.AddScoped<CarDealership.Data.Seeds.ISeedService, CarDealership.Data.Seeds.SuperAdminSeedService>();
+builder.Services.AddScoped<CarDealership.Data.Seeds.SuperAdminSeedService>();
+builder.Services.AddScoped<CarDealership.Data.Seeds.DataSeeder>();
+
+// Add background services
+builder.Services.AddHostedService<StartupService>();
 
 // Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

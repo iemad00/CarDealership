@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using CarDealership.Models.DTOs.Auth;
-using CarDealership.Services;
+using CarDealership.Services.User;
 
-namespace CarDealership.Controllers;
+namespace CarDealership.Controllers.User;
 
 [ApiController]
 [Route("auth")]

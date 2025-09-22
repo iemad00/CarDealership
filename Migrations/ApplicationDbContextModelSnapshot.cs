@@ -22,6 +22,82 @@ namespace CarDealership.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("CarDealership.Models.AdminUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
+                    b.ToTable("AdminUsers", (string)null);
+                });
+
+            modelBuilder.Entity("CarDealership.Models.AdminUserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdminUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("AdminUserId", "RoleId")
+                        .IsUnique();
+
+                    b.ToTable("AdminUserRoles", (string)null);
+                });
+
             modelBuilder.Entity("CarDealership.Models.Passcode", b =>
                 {
                     b.Property<int>("Id")
@@ -53,12 +129,118 @@ namespace CarDealership.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("UserId", "UserType")
                         .IsUnique();
 
-                    b.ToTable("Passcodes");
+                    b.ToTable("Passcodes", (string)null);
+                });
+
+            modelBuilder.Entity("CarDealership.Models.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Resource")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Resource", "Action")
+                        .IsUnique();
+
+                    b.ToTable("Permissions", (string)null);
+                });
+
+            modelBuilder.Entity("CarDealership.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("CarDealership.Models.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId", "PermissionId")
+                        .IsUnique();
+
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("CarDealership.Models.User", b =>
@@ -85,23 +267,62 @@ namespace CarDealership.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("CarDealership.Models.Passcode", b =>
+            modelBuilder.Entity("CarDealership.Models.AdminUserRole", b =>
                 {
-                    b.HasOne("CarDealership.Models.User", "User")
-                        .WithOne("Passcode")
-                        .HasForeignKey("CarDealership.Models.Passcode", "UserId")
+                    b.HasOne("CarDealership.Models.AdminUser", "AdminUser")
+                        .WithMany("AdminUserRoles")
+                        .HasForeignKey("AdminUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("CarDealership.Models.Role", "Role")
+                        .WithMany("AdminUserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdminUser");
+
+                    b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("CarDealership.Models.User", b =>
+            modelBuilder.Entity("CarDealership.Models.RolePermission", b =>
                 {
-                    b.Navigation("Passcode");
+                    b.HasOne("CarDealership.Models.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarDealership.Models.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("CarDealership.Models.AdminUser", b =>
+                {
+                    b.Navigation("AdminUserRoles");
+                });
+
+            modelBuilder.Entity("CarDealership.Models.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("CarDealership.Models.Role", b =>
+                {
+                    b.Navigation("AdminUserRoles");
+
+                    b.Navigation("RolePermissions");
                 });
 #pragma warning restore 612, 618
         }

@@ -22,17 +22,26 @@ public class RoutePrefixConvention : IControllerModelConvention
 
     public void Apply(ControllerModel controller)
     {
+        // Determine the base prefix based on controller namespace
+        string basePrefix = _prefix; // Default: "api/v{version:apiVersion}"
+        
+        if (controller.ControllerType.Namespace?.Contains("Controllers.Admin") == true)
+        {
+            basePrefix = _prefix + "/dashboard"; // "api/v{version:apiVersion}/dashboard"
+        }
+        // User controllers just get the default prefix: "api/v{version:apiVersion}"
+
         foreach (var selector in controller.Selectors)
         {
             if (selector.AttributeRouteModel != null)
             {
-                selector.AttributeRouteModel.Template = _prefix + "/" + selector.AttributeRouteModel.Template?.TrimStart('/');
+                selector.AttributeRouteModel.Template = basePrefix + "/" + selector.AttributeRouteModel.Template?.TrimStart('/');
             }
             else
             {
                 selector.AttributeRouteModel = new AttributeRouteModel
                 {
-                    Template = _prefix + "/" + controller.ControllerName.ToLower()
+                    Template = basePrefix + "/" + controller.ControllerName.ToLower()
                 };
             }
         }

@@ -42,7 +42,7 @@ public class JwtService : IJwtService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateAccessToken(User user)
+    public string GenerateAccessToken(Models.User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -66,7 +66,34 @@ public class JwtService : IJwtService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken(User user)
+    public string GenerateAccessToken(AdminUser adminUser)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim("type", "access"),
+            new Claim(ClaimTypes.NameIdentifier, adminUser.Id.ToString()),
+            new Claim(ClaimTypes.Name, adminUser.Phone),
+            new Claim("phone", adminUser.Phone),
+            new Claim("userType", "AdminUser"),
+            new Claim("name", adminUser.Name),
+            new Claim("email", adminUser.Email)
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(15), // 15 minutes
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string GenerateRefreshToken(Models.User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -76,6 +103,30 @@ public class JwtService : IJwtService
             new Claim("type", "refresh"),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim("phone", user.Phone),
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(30), // 30 days
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string GenerateRefreshToken(AdminUser adminUser)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim("type", "refresh"),
+            new Claim(ClaimTypes.NameIdentifier, adminUser.Id.ToString()),
+            new Claim("phone", adminUser.Phone),
+            new Claim("userType", "AdminUser")
         };
 
         var token = new JwtSecurityToken(

@@ -6,24 +6,27 @@ using CarDealership.Models.DTOs.User;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CarDealership.Services;
+namespace CarDealership.Services.User;
 
 public class AuthService : IAuthService
 {
     private readonly ApplicationDbContext _context;
     private readonly IOtpService _otpService;
     private readonly IJwtService _jwtService;
+    private readonly IPasscodeHashService _passcodeHashService;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
         ApplicationDbContext context,
         IOtpService otpService,
         IJwtService jwtService,
+        IPasscodeHashService passcodeHashService,
         ILogger<AuthService> logger)
     {
         _context = context;
         _otpService = otpService;
         _jwtService = jwtService;
+        _passcodeHashService = passcodeHashService;
         _logger = logger;
     }
 
@@ -73,7 +76,7 @@ public class AuthService : IAuthService
             // Create user if doesn't exist
             if (user == null)
             {
-                user = new User
+                user = new Models.User
                 {
                     Phone = request.Phone,
                     CreatedAt = DateTime.UtcNow,
@@ -131,7 +134,6 @@ public class AuthService : IAuthService
 
             // Get user
             var user = await _context.Users
-                .Include(u => u.Passcode)
                 .FirstOrDefaultAsync(u => u.Phone == phone);
             
             if (user == null)
@@ -143,14 +145,19 @@ public class AuthService : IAuthService
                 };
             }
 
+            // Get existing passcode
+            var existingPasscode = await _context.Passcodes
+                .FirstOrDefaultAsync(p => p.UserId == user.Id && p.UserType == "User");
+
             // Handle first login - create passcode
-            if (user.Passcode == null)
+            if (existingPasscode == null)
             {
-                var passcodeHash = HashPasscode(request.Passcode);
+                var passcodeHash = _passcodeHashService.HashUserPasscode(request.Passcode);
                 
                 var passcode = new Passcode
                 {
                     UserId = user.Id,
+                    UserType = "User",
                     Hash = passcodeHash,
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true,
@@ -165,13 +172,13 @@ public class AuthService : IAuthService
             else
             {
                 // Verify existing passcode
-                var isValidPasscode = VerifyPasscode(request.Passcode, user.Passcode.Hash);
+                var isValidPasscode = VerifyPasscode(request.Passcode, existingPasscode.Hash);
                 
                 if (!isValidPasscode)
                 {
                     // Update failed attempts
-                    user.Passcode.FailedAttempts++;
-                    user.Passcode.LastAttemptAt = DateTime.UtcNow;
+                    existingPasscode.FailedAttempts++;
+                    existingPasscode.LastAttemptAt = DateTime.UtcNow;
                     await _context.SaveChangesAsync();
                     
                     _logger.LogWarning("Invalid passcode attempt for user {Phone}", phone);
@@ -184,8 +191,8 @@ public class AuthService : IAuthService
                 }
                 
                 // Reset failed attempts on successful login
-                user.Passcode.FailedAttempts = 0;
-                user.Passcode.LastAttemptAt = DateTime.UtcNow;
+                existingPasscode.FailedAttempts = 0;
+                existingPasscode.LastAttemptAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
 
@@ -288,16 +295,9 @@ public class AuthService : IAuthService
         }
     }
 
-    private static string HashPasscode(string passcode)
-    {
-        using var sha256 = SHA256.Create();
-        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(passcode));
-        return Convert.ToBase64String(hashedBytes);
-    }
 
-    private static bool VerifyPasscode(string passcode, string hash)
+    private bool VerifyPasscode(string passcode, string hash)
     {
-        var hashedPasscode = HashPasscode(passcode);
-        return hashedPasscode == hash;
+        return _passcodeHashService.VerifyUserPasscode(passcode, hash);
     }
 }

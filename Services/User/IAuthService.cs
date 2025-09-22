@@ -1,6 +1,6 @@
 using CarDealership.Models.DTOs.Auth;
 
-namespace CarDealership.Services;
+namespace CarDealership.Services.User;
 
 public interface IAuthService
 {
