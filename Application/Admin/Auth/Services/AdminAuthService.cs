@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using CarDealership.Data;
 using CarDealership.Models;
 using CarDealership.Models.DTOs.Admin;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace CarDealership.Services.Admin;
 
@@ -33,7 +31,6 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            // Check if admin user exists and is active
             var adminUser = await _context.AdminUsers
                 .FirstOrDefaultAsync(u => u.Phone == request.Phone);
 
@@ -78,8 +75,8 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            // Verify OTP
             var otpResult = await _otpService.VerifyOtpAsync(request.Phone, request.Otp);
+            
             if (!otpResult.Success)
             {
                 return new VerifyOtpResponse
@@ -89,7 +86,6 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Check if admin user exists
             var adminUser = await _context.AdminUsers.FirstOrDefaultAsync(u => u.Phone == request.Phone);
             
             if (adminUser == null)
@@ -110,12 +106,10 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Check if this is first login by looking for existing passcode
             var existingPasscode = await _context.Passcodes
                 .FirstOrDefaultAsync(p => p.UserId == adminUser.Id && p.UserType == "AdminUser");
             var isFirstLogin = existingPasscode == null;
 
-            // Generate login token
             var loginToken = _jwtService.GenerateLoginToken(request.Phone);
 
             return new VerifyOtpResponse
@@ -132,7 +126,7 @@ public class AdminAuthService : IAdminAuthService
                     Email = adminUser.Email,
                     CreatedAt = adminUser.CreatedAt,
                     LastLoginAt = adminUser.LastLoginAt,
-                    RoleName = null // Will be populated during authentication
+                    RoleName = null
                 }
             };
         }
@@ -151,7 +145,6 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            // Get phone from login token
             var phone = _jwtService.GetPhoneFromLoginToken(request.LoginToken);
             
             if (string.IsNullOrEmpty(phone))
@@ -163,7 +156,6 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Get admin user with role and permissions
             var adminUser = await _context.AdminUsers
                 .Include(u => u.AdminUserRole)
                     .ThenInclude(ur => ur!.Role)
@@ -180,8 +172,6 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Handle first login - create passcode only
-            // Get existing passcode
             var existingPasscode = await _context.Passcodes
                 .FirstOrDefaultAsync(p => p.UserId == adminUser.Id && p.UserType == "AdminUser");
 
@@ -206,12 +196,10 @@ public class AdminAuthService : IAdminAuthService
             }
             else
             {
-                // Verify existing passcode
                 var isValidPasscode = VerifyPasscode(request.Passcode, existingPasscode.Hash);
                 
                 if (!isValidPasscode)
                 {
-                    // Update failed attempts
                     existingPasscode.FailedAttempts++;
                     existingPasscode.LastAttemptAt = DateTime.UtcNow;
                     await _context.SaveChangesAsync();
@@ -225,20 +213,16 @@ public class AdminAuthService : IAdminAuthService
                     };
                 }
                 
-                // Reset failed attempts on successful login
                 existingPasscode.FailedAttempts = 0;
                 existingPasscode.LastAttemptAt = DateTime.UtcNow;
             }
 
-            // Update last login
             adminUser.LastLoginAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
-            // Generate tokens
             var accessToken = _jwtService.GenerateAccessToken(adminUser);
             var refreshToken = _jwtService.GenerateRefreshToken(adminUser);
 
-            // Map role and permissions (single role only)
             var roles = new List<RoleDto>();
             if (adminUser.AdminUserRole != null && 
                 adminUser.AdminUserRole.IsActive)
@@ -294,7 +278,6 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            // Get admin user ID from refresh token
             var userId = _jwtService.GetUserIdFromToken(request.RefreshToken);
             
             if (userId == null)
@@ -306,7 +289,6 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Validate refresh token
             if (!_jwtService.ValidateRefreshToken(request.RefreshToken, userId.Value))
             {
                 return new RefreshTokenResponse
@@ -316,7 +298,6 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Get admin user with role
             var adminUser = await _context.AdminUsers
                 .Include(u => u.AdminUserRole)
                     .ThenInclude(ur => ur!.Role)
@@ -333,14 +314,11 @@ public class AdminAuthService : IAdminAuthService
                 };
             }
 
-            // Invalidate old refresh token
             await _jwtService.InvalidateRefreshTokenAsync(request.RefreshToken);
 
-            // Generate new tokens
             var accessToken = _jwtService.GenerateAccessToken(adminUser);
             var refreshToken = _jwtService.GenerateRefreshToken(adminUser);
 
-            // Map role and permissions (single role only)
             var roles = new List<RoleDto>();
             if (adminUser.AdminUserRole != null && 
                 adminUser.AdminUserRole.IsActive)
@@ -392,9 +370,10 @@ public class AdminAuthService : IAdminAuthService
         }
     }
 
-
     private bool VerifyPasscode(string passcode, string hash)
     {
         return _passcodeHashService.VerifyAdminPasscode(passcode, hash);
     }
 }
+
+

@@ -85,3 +85,5 @@ public class AdminManagementController : ControllerBase
         return Ok(new { success = true, message = "", data = permissions });
     }
 }
+
+

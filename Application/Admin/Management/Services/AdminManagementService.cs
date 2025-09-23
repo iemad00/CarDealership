@@ -22,7 +22,6 @@ public class AdminManagementService : IAdminManagementService
     {
         try
         {
-            // Check if admin user already exists
             var existingAdmin = await _context.AdminUsers
                 .FirstOrDefaultAsync(u => u.Phone == request.Phone || u.Email == request.Email);
             
@@ -35,7 +34,6 @@ public class AdminManagementService : IAdminManagementService
                 };
             }
 
-            // Create admin user
             var adminUser = new AdminUser
             {
                 Phone = request.Phone,
@@ -49,10 +47,9 @@ public class AdminManagementService : IAdminManagementService
             await _context.SaveChangesAsync();
 
 
-            // Assign role if provided (single role only)
             if (request.RoleIds.Any())
             {
-                var roleId = request.RoleIds[0]; // Take only the first role
+                var roleId = request.RoleIds[0];
                 var role = await _context.Roles
                     .FirstOrDefaultAsync(r => r.Id == roleId && r.IsActive);
 
@@ -74,7 +71,6 @@ public class AdminManagementService : IAdminManagementService
             _logger.LogInformation("Admin user created: {Phone} with {RoleCount} roles", 
                 request.Phone, request.RoleIds.Count);
 
-            // Get the created admin user with roles
             var createdAdmin = await GetAdminUserByIdAsync(adminUser.Id);
 
             return new CreateAdminUserResponse
@@ -99,7 +95,6 @@ public class AdminManagementService : IAdminManagementService
     {
         try
         {
-            // Check if admin user exists
             var adminUser = await _context.AdminUsers.FindAsync(request.AdminUserId);
             if (adminUser == null)
             {
@@ -110,7 +105,6 @@ public class AdminManagementService : IAdminManagementService
                 };
             }
 
-            // Check if role exists
             var role = await _context.Roles.FindAsync(request.RoleId);
             if (role == null || !role.IsActive)
             {
@@ -121,17 +115,14 @@ public class AdminManagementService : IAdminManagementService
                 };
             }
 
-            // Remove any existing role assignment (single role only)
             var existingAssignment = await _context.AdminUserRoles
                 .FirstOrDefaultAsync(ur => ur.AdminUserId == request.AdminUserId);
 
             if (existingAssignment != null)
             {
-                // Remove the old role assignment
                 _context.AdminUserRoles.Remove(existingAssignment);
             }
 
-            // Create new assignment
             var adminUserRole = new AdminUserRole
             {
                 AdminUserId = request.AdminUserId,
@@ -308,5 +299,6 @@ public class AdminManagementService : IAdminManagementService
             IsActive = permission.IsActive
         };
     }
-
 }
+
+
