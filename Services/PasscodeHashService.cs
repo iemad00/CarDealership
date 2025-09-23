@@ -1,26 +1,28 @@
 using System.Security.Cryptography;
 using System.Text;
+using CarDealership.Options;
+using Microsoft.Extensions.Options;
 
 namespace CarDealership.Services;
 
 public class PasscodeHashService : IPasscodeHashService
 {
-    private readonly IConfiguration _configuration;
+    private readonly PasscodeHashingOptions _options;
 
-    public PasscodeHashService(IConfiguration configuration)
+    public PasscodeHashService(IOptions<PasscodeHashingOptions> options)
     {
-        _configuration = configuration;
+        _options = options.Value;
     }
 
     public string HashUserPasscode(string passcode)
     {
-        var salt = _configuration["PasscodeHashing:UserSalt"] ?? "user_salt_default";
+        var salt = _options.UserSalt ?? "user_salt_default";
         return HashPasscode(passcode, salt);
     }
 
     public string HashAdminPasscode(string passcode)
     {
-        var salt = _configuration["PasscodeHashing:AdminSalt"] ?? "admin_salt_default";
+        var salt = _options.AdminSalt ?? "admin_salt_default";
         return HashPasscode(passcode, salt);
     }
 

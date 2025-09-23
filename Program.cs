@@ -6,6 +6,7 @@ using CarDealership.Data;
 using CarDealership.Services;
 using CarDealership.Extensions;
 using StackExchange.Redis;
+using CarDealership.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
     ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")!));
+
+// Bind options
+builder.Services.AddOptions<JwtOptions>()
+    .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
+    .ValidateDataAnnotations()
+    .Validate(o => !string.IsNullOrWhiteSpace(o.Key) && o.Key.Length >= 32, "Jwt:Key must be at least 32 characters.");
+
+builder.Services.AddOptions<PasscodeHashingOptions>()
+    .Bind(builder.Configuration.GetSection(PasscodeHashingOptions.SectionName))
+    .ValidateDataAnnotations();
 
 // Add custom services
 builder.Services.AddScoped<IOtpService, OtpService>();
