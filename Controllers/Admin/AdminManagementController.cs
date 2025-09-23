@@ -24,7 +24,11 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> CreateAdminUser([FromBody] CreateAdminUserRequest request)
     {
         var response = await _adminManagementService.CreateAdminUserAsync(request);
-        return response.Success ? Ok(response) : BadRequest(response);
+        if (!response.Success)
+        {
+            return BadRequest(new { success = false, message = response.Message, data = new { } });
+        }
+        return Ok(response);
     }
 
     [HttpPost("assign-role")]
@@ -32,7 +36,11 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> AssignRole([FromBody] AssignRoleRequest request)
     {
         var response = await _adminManagementService.AssignRoleToAdminAsync(request);
-        return response.Success ? Ok(response) : BadRequest(response);
+        if (!response.Success)
+        {
+            return BadRequest(new { success = false, message = response.Message, data = new { } });
+        }
+        return Ok(response);
     }
 
     [HttpDelete("remove-role/{adminUserId}/{roleId}")]
@@ -40,8 +48,8 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> RemoveRole(int adminUserId, int roleId)
     {
         var success = await _adminManagementService.RemoveRoleFromAdminAsync(adminUserId, roleId);
-        return success ? Ok(new { Success = true, Message = "Role removed successfully" }) 
-                      : BadRequest(new { Success = false, Message = "Failed to remove role" });
+        return success ? Ok(new { success = true, message = "Role removed successfully" }) 
+                      : BadRequest(new { success = false, message = "Failed to remove role", data = new { } });
     }
 
     [HttpGet("admin-users")]
@@ -49,7 +57,7 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> GetAllAdminUsers()
     {
         var adminUsers = await _adminManagementService.GetAllAdminUsersAsync();
-        return Ok(adminUsers);
+        return Ok(new { success = true, message = "", data = adminUsers });
     }
 
     [HttpGet("admin-users/{adminUserId}")]
@@ -57,7 +65,8 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> GetAdminUser(int adminUserId)
     {
         var adminUser = await _adminManagementService.GetAdminUserByIdAsync(adminUserId);
-        return adminUser != null ? Ok(adminUser) : NotFound(new { Message = "Admin user not found" });
+        return adminUser != null ? Ok(new { success = true, message = "", data = adminUser }) 
+                                 : NotFound(new { success = false, message = "Admin user not found", data = new { } });
     }
 
     [HttpGet("roles")]
@@ -65,7 +74,7 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> GetRoles()
     {
         var roles = await _adminManagementService.GetRolesAsync();
-        return Ok(roles);
+        return Ok(new { success = true, message = "", data = roles });
     }
 
     [HttpGet("permissions")]
@@ -73,6 +82,6 @@ public class AdminManagementController : ControllerBase
     public async Task<IActionResult> GetPermissions()
     {
         var permissions = await _adminManagementService.GetPermissionsAsync();
-        return Ok(permissions);
+        return Ok(new { success = true, message = "", data = permissions });
     }
 }

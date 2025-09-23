@@ -20,27 +20,43 @@ public class UserAuthController : ControllerBase
     public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest request)
     {
         var response = await _authService.SendOtpAsync(request);
-        return response.Success ? Ok(response) : BadRequest(response);
+        if (!response.Success)
+        {
+            return BadRequest(new { success = false, message = response.Message, data = new { } });
+        }
+        return Ok(response);
     }
 
     [HttpPost("verify")]
     public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest request)
     {
         var response = await _authService.VerifyOtpAsync(request);
-        return response.Success ? Ok(response) : BadRequest(response);
+        if (!response.Success)
+        {
+            return BadRequest(new { success = false, message = response.Message, data = new { } });
+        }
+        return Ok(response);
     }
 
     [HttpPost("authenticate")]
     public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest request)
     {
         var response = await _authService.AuthenticateAsync(request);
-        return response.Success ? Ok(response) : BadRequest(response);
+        if (!response.Success)
+        {
+            return BadRequest(new { success = false, message = response.Message, data = new { } });
+        }
+        return Ok(response);
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
         var response = await _authService.RefreshTokenAsync(request);
-        return response.Success ? Ok(response) : BadRequest(response);
+        if (!response.Success)
+        {
+            return BadRequest(new { success = false, message = response.Message, data = new { } });
+        }
+        return Ok(response);
     }
 }

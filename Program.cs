@@ -34,6 +34,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseGlobalErrorHandler();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

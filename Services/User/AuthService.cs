@@ -58,14 +58,13 @@ public class AuthService : IAuthService
         try
         {
             // Verify OTP
-            var isValidOtp = await _otpService.VerifyOtpAsync(request.Phone, request.Otp);
-            
-            if (!isValidOtp)
+            var otpResult = await _otpService.VerifyOtpAsync(request.Phone, request.Otp);
+            if (!otpResult.Success)
             {
                 return new VerifyOtpResponse
                 {
                     Success = false,
-                    Message = "Invalid OTP"
+                    Message = string.IsNullOrWhiteSpace(otpResult.Message) ? "Invalid OTP" : otpResult.Message
                 };
             }
 

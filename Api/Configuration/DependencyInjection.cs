@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
+using CarDealership.Middlewares;
+using System.Text.Json;
 
 namespace CarDealership.Configuration;
 
@@ -57,6 +59,41 @@ public static class DependencyInjection
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+                        if (!context.Response.HasStarted)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            var payload = new
+                            {
+                                success = false,
+                                message = "Unauthorized",
+                                data = new { }
+                            };
+                            await context.Response.WriteAsync(JsonSerializer.Serialize(payload));
+                        }
+                    },
+                    OnForbidden = async context =>
+                    {
+                        if (!context.Response.HasStarted)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Response.ContentType = "application/json";
+                            var payload = new
+                            {
+                                success = false,
+                                message = "Forbidden",
+                                data = new { }
+                            };
+                            await context.Response.WriteAsync(JsonSerializer.Serialize(payload));
+                        }
+                    }
+                };
             });
 
         return services;
@@ -74,6 +111,12 @@ public static class DependencyInjection
         services.AddScoped<CarDealership.Data.Seeds.DataSeeder>();
 
         return services;
+    }
+
+    public static IApplicationBuilder UseGlobalErrorHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+        return app;
     }
 }
 
