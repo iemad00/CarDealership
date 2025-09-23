@@ -104,6 +104,8 @@ public static class DependencyInjection
         services.AddScoped<CarDealership.Services.User.IAuthService, CarDealership.Services.User.AuthService>();
         services.AddScoped<CarDealership.Services.Admin.IAdminAuthService, CarDealership.Services.Admin.AdminAuthService>();
         services.AddScoped<CarDealership.Services.Admin.IAdminManagementService, CarDealership.Services.Admin.AdminManagementService>();
+        services.AddScoped<CarDealership.Services.Admin.IVehicleAdminService, CarDealership.Services.Admin.VehicleAdminService>();
+        services.AddScoped<CarDealership.Services.User.IVehicleBrowseService, CarDealership.Services.User.VehicleBrowseService>();
 
         // Seeding services
         services.AddScoped<CarDealership.Data.Seeds.ISeedService, CarDealership.Data.Seeds.SuperAdminSeedService>();
