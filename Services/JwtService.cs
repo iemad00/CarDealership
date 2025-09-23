@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +5,7 @@ using CarDealership.Models;
 using StackExchange.Redis;
 using CarDealership.Options;
 using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CarDealership.Services;
 
@@ -100,12 +100,11 @@ public class JwtService : IJwtService
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
         var claims = new[]
         {
             new Claim("type", "refresh"),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(PhoneClaimType, user.Phone),
+            new Claim(PhoneClaimType, user.Phone)
         };
 
         var token = new JwtSecurityToken(
@@ -123,7 +122,6 @@ public class JwtService : IJwtService
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
         var claims = new[]
         {
             new Claim("type", "refresh"),
@@ -293,5 +291,22 @@ public class JwtService : IJwtService
             _logger.LogError(ex, "Failed to invalidate refresh token");
             return false;
         }
+    }
+
+    public Task<string> GenerateJtiAsync()
+    {
+        return Task.FromResult(Guid.NewGuid().ToString("N"));
+    }
+
+    public Task<bool> AllowListRefreshJtiAsync(string jti, TimeSpan ttl)
+    {
+        var ok = _redis.StringSet($"refresh_jti_allow:{jti}", "1", ttl);
+        return Task.FromResult(ok);
+    }
+
+    public Task<bool> IsRefreshJtiAllowedAsync(string jti)
+    {
+        var exists = _redis.KeyExists($"refresh_jti_allow:{jti}");
+        return Task.FromResult(exists);
     }
 }
