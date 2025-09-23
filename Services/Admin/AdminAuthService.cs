@@ -242,8 +242,7 @@ public class AdminAuthService : IAdminAuthService
             // Map role and permissions (single role only)
             var roles = new List<RoleDto>();
             if (adminUser.AdminUserRole != null && 
-                adminUser.AdminUserRole.IsActive && 
-                (adminUser.AdminUserRole.ExpiresAt == null || adminUser.AdminUserRole.ExpiresAt > DateTime.UtcNow))
+                adminUser.AdminUserRole.IsActive)
             {
                 roles.Add(new RoleDto
                 {
@@ -345,8 +344,7 @@ public class AdminAuthService : IAdminAuthService
             // Map role and permissions (single role only)
             var roles = new List<RoleDto>();
             if (adminUser.AdminUserRole != null && 
-                adminUser.AdminUserRole.IsActive && 
-                (adminUser.AdminUserRole.ExpiresAt == null || adminUser.AdminUserRole.ExpiresAt > DateTime.UtcNow))
+                adminUser.AdminUserRole.IsActive)
             {
                 roles.Add(new RoleDto
                 {

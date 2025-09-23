@@ -54,7 +54,6 @@ public class RequirePermissionAttribute : Attribute, IAuthorizationFilter
         // Check if admin user has the required permission (single role)
         var hasPermission = adminUser.AdminUserRole != null &&
                            adminUser.AdminUserRole.IsActive &&
-                           (adminUser.AdminUserRole.ExpiresAt == null || adminUser.AdminUserRole.ExpiresAt > DateTime.UtcNow) &&
                            adminUser.AdminUserRole.Role.RolePermissions
                                .Any(rp => rp.Permission.Resource.Equals(_resource, StringComparison.OrdinalIgnoreCase) &&
                                          rp.Permission.Action.Equals(_action, StringComparison.OrdinalIgnoreCase));

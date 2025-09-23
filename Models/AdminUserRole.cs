@@ -6,7 +6,6 @@ public class AdminUserRole
     public int AdminUserId { get; set; }
     public int RoleId { get; set; }
     public DateTime AssignedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? ExpiresAt { get; set; }
     public bool IsActive { get; set; } = true;
     
     // Navigation properties

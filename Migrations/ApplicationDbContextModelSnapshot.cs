@@ -62,7 +62,7 @@ namespace CarDealership.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("AdminUsers", (string)null);
+                    b.ToTable("AdminUsers");
                 });
 
             modelBuilder.Entity("CarDealership.Models.AdminUserRole", b =>
@@ -79,9 +79,6 @@ namespace CarDealership.Migrations
                     b.Property<DateTime>("AssignedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
@@ -90,12 +87,12 @@ namespace CarDealership.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("AdminUserId", "RoleId")
+                    b.HasIndex("AdminUserId")
                         .IsUnique();
 
-                    b.ToTable("AdminUserRoles", (string)null);
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AdminUserRoles");
                 });
 
             modelBuilder.Entity("CarDealership.Models.Passcode", b =>
@@ -139,7 +136,7 @@ namespace CarDealership.Migrations
                     b.HasIndex("UserId", "UserType")
                         .IsUnique();
 
-                    b.ToTable("Passcodes", (string)null);
+                    b.ToTable("Passcodes");
                 });
 
             modelBuilder.Entity("CarDealership.Models.Permission", b =>
@@ -181,7 +178,7 @@ namespace CarDealership.Migrations
                     b.HasIndex("Resource", "Action")
                         .IsUnique();
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("CarDealership.Models.Role", b =>
@@ -213,7 +210,7 @@ namespace CarDealership.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("CarDealership.Models.RolePermission", b =>
@@ -240,7 +237,7 @@ namespace CarDealership.Migrations
                     b.HasIndex("RoleId", "PermissionId")
                         .IsUnique();
 
-                    b.ToTable("RolePermissions", (string)null);
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("CarDealership.Models.User", b =>
@@ -267,14 +264,14 @@ namespace CarDealership.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CarDealership.Models.AdminUserRole", b =>
                 {
                     b.HasOne("CarDealership.Models.AdminUser", "AdminUser")
-                        .WithMany("AdminUserRoles")
-                        .HasForeignKey("AdminUserId")
+                        .WithOne("AdminUserRole")
+                        .HasForeignKey("CarDealership.Models.AdminUserRole", "AdminUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -310,7 +307,7 @@ namespace CarDealership.Migrations
 
             modelBuilder.Entity("CarDealership.Models.AdminUser", b =>
                 {
-                    b.Navigation("AdminUserRoles");
+                    b.Navigation("AdminUserRole");
                 });
 
             modelBuilder.Entity("CarDealership.Models.Permission", b =>

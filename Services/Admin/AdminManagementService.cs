@@ -137,7 +137,6 @@ public class AdminManagementService : IAdminManagementService
                 AdminUserId = request.AdminUserId,
                 RoleId = request.RoleId,
                 AssignedAt = DateTime.UtcNow,
-                ExpiresAt = request.ExpiresAt,
                 IsActive = true
             };
             _context.AdminUserRoles.Add(adminUserRole);
@@ -238,8 +237,7 @@ public class AdminManagementService : IAdminManagementService
             Email = adminUser.Email,
             CreatedAt = adminUser.CreatedAt,
             LastLoginAt = adminUser.LastLoginAt,
-            RoleName = adminUser.AdminUserRole?.IsActive == true && 
-                      (adminUser.AdminUserRole.ExpiresAt == null || adminUser.AdminUserRole.ExpiresAt > DateTime.UtcNow)
+            RoleName = adminUser.AdminUserRole?.IsActive == true
                       ? adminUser.AdminUserRole.Role.Name 
                       : null
         };
