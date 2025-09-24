@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CarDealership.Models.DTOs.Auth;
 using CarDealership.Services.User;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Controllers.User;
 

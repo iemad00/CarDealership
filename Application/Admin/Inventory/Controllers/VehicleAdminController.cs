@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CarDealership.Application.Admin.Inventory.Dtos;
+using CarDealership.Application.Common.Dtos;
 using CarDealership.Services.Admin;
 using CarDealership.Attributes;
 
@@ -28,7 +29,7 @@ public class VehicleAdminController : ControllerBase
         {
             return BadRequest(new { success = false, message = response.Message, data = new { } });
         }
-        return Ok(new { success = true, message = response.Message, data = response.Vehicle });
+        return Ok(new { success = true, message = response.Message, data = response.Data });
     }
 
     [HttpPatch("{id}")]
@@ -40,7 +41,7 @@ public class VehicleAdminController : ControllerBase
         {
             return BadRequest(new { success = false, message = response.Message, data = new { } });
         }
-        return Ok(new { success = true, message = response.Message, data = response.Vehicle });
+        return Ok(new { success = true, message = response.Message, data = response.Data });
     }
 }
 

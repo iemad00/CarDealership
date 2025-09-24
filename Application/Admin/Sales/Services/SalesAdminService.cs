@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CarDealership.Data;
 using CarDealership.Application.Admin.Sales.Dtos;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
@@ -15,20 +16,20 @@ public class SalesAdminService : ISalesAdminService
         _logger = logger;
     }
 
-    public async Task<ProcessSaleResponse> ProcessSaleAsync(ProcessSaleRequest request)
+    public async Task<Response<ProcessSaleData>> ProcessSaleAsync(ProcessSaleRequest request)
     {
         try
         {
             var pr = await _context.PurchaseRequests.FirstOrDefaultAsync(x => x.Id == request.PurchaseRequestId && x.Status == "Pending");
             if (pr == null)
             {
-                return new ProcessSaleResponse { Success = false, Message = "Request not found or already processed" };
+                return new Response<ProcessSaleData> { Success = false, Message = "Request not found or already processed" };
             }
 
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == pr.VehicleId && v.IsActive);
             if (vehicle == null)
             {
-                return new ProcessSaleResponse { Success = false, Message = "Vehicle not found or inactive" };
+                return new Response<ProcessSaleData> { Success = false, Message = "Vehicle not found or inactive" };
             }
 
             pr.Status = "Completed";
@@ -46,12 +47,12 @@ public class SalesAdminService : ISalesAdminService
 
             await _context.SaveChangesAsync();
 
-            return new ProcessSaleResponse { Success = true, Message = "Sale processed", PurchaseId = purchase.Id };
+            return new Response<ProcessSaleData> { Success = true, Message = "Sale processed", Data = new ProcessSaleData { PurchaseId = purchase.Id } };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error processing sale");
-            return new ProcessSaleResponse { Success = false, Message = "Failed to process sale" };
+            return new Response<ProcessSaleData> { Success = false, Message = "Failed to process sale" };
         }
     }
 }

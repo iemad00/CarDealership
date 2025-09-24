@@ -1,12 +1,13 @@
 using CarDealership.Application.Admin.Inventory.Dtos;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
 public interface IVehicleAdminService
 {
-    Task<AddVehicleResponse> AddVehicleAsync(AddVehicleRequest request);
-    Task<UpdateVehicleResponse> UpdateVehicleAsync(UpdateVehicleRequest request);
-    Task<UpdateVehicleResponse> PatchVehicleAsync(int id, PatchVehicleRequest request);
+    Task<Response<VehicleDto>> AddVehicleAsync(AddVehicleRequest request);
+    Task<Response<VehicleDto>> UpdateVehicleAsync(UpdateVehicleRequest request);
+    Task<Response<VehicleDto>> PatchVehicleAsync(int id, PatchVehicleRequest request);
 }
 
 

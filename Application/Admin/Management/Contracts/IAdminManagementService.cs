@@ -1,11 +1,12 @@
 using CarDealership.Models.DTOs.Admin;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
 public interface IAdminManagementService
 {
-    Task<CreateAdminUserResponse> CreateAdminUserAsync(CreateAdminUserRequest request);
-    Task<AssignRoleResponse> AssignRoleToAdminAsync(AssignRoleRequest request);
+    Task<Response<AdminUserDto>> CreateAdminUserAsync(CreateAdminUserRequest request);
+    Task<Response> AssignRoleToAdminAsync(AssignRoleRequest request);
     Task<bool> RemoveRoleFromAdminAsync(int adminUserId, int roleId);
     Task<List<AdminUserDto>> GetAllAdminUsersAsync();
     Task<AdminUserDto?> GetAdminUserByIdAsync(int adminUserId);

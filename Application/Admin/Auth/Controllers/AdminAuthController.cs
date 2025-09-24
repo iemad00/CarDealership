@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CarDealership.Models.DTOs.Admin;
 using CarDealership.Services.Admin;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Controllers.Admin;
 

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CarDealership.Data;
 using CarDealership.Application.Admin.Inventory.Dtos;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
@@ -15,7 +16,7 @@ public class VehicleAdminService : IVehicleAdminService
         _logger = logger;
     }
 
-    public async Task<AddVehicleResponse> AddVehicleAsync(AddVehicleRequest request)
+    public async Task<Response<VehicleDto>> AddVehicleAsync(AddVehicleRequest request)
     {
         try
         {
@@ -35,28 +36,28 @@ public class VehicleAdminService : IVehicleAdminService
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
 
-            return new AddVehicleResponse
+            return new Response<VehicleDto>
             {
                 Success = true,
                 Message = "Vehicle added",
-                Vehicle = Map(vehicle)
+                Data = Map(vehicle)
             };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding vehicle");
-            return new AddVehicleResponse { Success = false, Message = "Failed to add vehicle" };
+            return new Response<VehicleDto> { Success = false, Message = "Failed to add vehicle" };
         }
     }
 
-    public async Task<UpdateVehicleResponse> UpdateVehicleAsync(UpdateVehicleRequest request)
+    public async Task<Response<VehicleDto>> UpdateVehicleAsync(UpdateVehicleRequest request)
     {
         try
         {
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == request.Id);
             if (vehicle == null)
             {
-                return new UpdateVehicleResponse { Success = false, Message = "Vehicle not found" };
+                return new Response<VehicleDto> { Success = false, Message = "Vehicle not found" };
             }
 
             vehicle.Make = request.Make;
@@ -70,28 +71,28 @@ public class VehicleAdminService : IVehicleAdminService
 
             await _context.SaveChangesAsync();
 
-            return new UpdateVehicleResponse
+            return new Response<VehicleDto>
             {
                 Success = true,
                 Message = "Vehicle updated",
-                Vehicle = Map(vehicle)
+                Data = Map(vehicle)
             };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating vehicle {Id}", request.Id);
-            return new UpdateVehicleResponse { Success = false, Message = "Failed to update vehicle" };
+            return new Response<VehicleDto> { Success = false, Message = "Failed to update vehicle" };
         }
     }
 
-    public async Task<UpdateVehicleResponse> PatchVehicleAsync(int id, PatchVehicleRequest request)
+    public async Task<Response<VehicleDto>> PatchVehicleAsync(int id, PatchVehicleRequest request)
     {
         try
         {
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
             if (vehicle == null)
             {
-                return new UpdateVehicleResponse { Success = false, Message = "Vehicle not found" };
+                return new Response<VehicleDto> { Success = false, Message = "Vehicle not found" };
             }
 
             if (request.Make != null) vehicle.Make = request.Make;
@@ -105,17 +106,17 @@ public class VehicleAdminService : IVehicleAdminService
 
             await _context.SaveChangesAsync();
 
-            return new UpdateVehicleResponse
+            return new Response<VehicleDto>
             {
                 Success = true,
                 Message = "Vehicle updated",
-                Vehicle = Map(vehicle)
+                Data = Map(vehicle)
             };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error patching vehicle {Id}", id);
-            return new UpdateVehicleResponse { Success = false, Message = "Failed to update vehicle" };
+            return new Response<VehicleDto> { Success = false, Message = "Failed to update vehicle" };
         }
     }
 

@@ -3,6 +3,7 @@ using CarDealership.Data;
 using CarDealership.Models;
 using CarDealership.Models.DTOs.Auth;
 using CarDealership.Models.DTOs.User;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.User;
 
@@ -28,13 +29,13 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
-    public async Task<SendOtpResponse> SendOtpAsync(SendOtpRequest request)
+    public async Task<Response> SendOtpAsync(SendOtpRequest request)
     {
         try
         {
             await _otpService.GenerateAndStoreOtpAsync(request.Phone);
             
-            return new SendOtpResponse
+            return new Response
             {
                 Success = true,
                 Message = "OTP sent successfully"
@@ -43,7 +44,7 @@ public class AuthService : IAuthService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error sending OTP to {Phone}", request.Phone);
-            return new SendOtpResponse
+            return new Response
             {
                 Success = false,
                 Message = "Failed to send OTP"

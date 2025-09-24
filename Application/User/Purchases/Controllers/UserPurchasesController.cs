@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CarDealership.Services.User;
 using CarDealership.Application.User.Purchases.Dtos;
+using CarDealership.Application.Common.Dtos;
 using CarDealership.Attributes;
 
 namespace CarDealership.Controllers.User;
@@ -25,7 +26,7 @@ public class UserPurchasesController : ControllerBase
         var userId = (int)HttpContext.Items["UserId"]!;
         var resp = await _service.CreatePurchaseRequestAsync(userId, request);
         if (!resp.Success) return BadRequest(new { success = false, message = resp.Message, data = new { } });
-        return Ok(new { success = true, message = resp.Message, data = new { requestId = resp.RequestId } });
+        return Ok(new { success = true, message = resp.Message, data = new { requestId = resp.Data!.RequestId } });
     }
 
     [HttpGet("history")]

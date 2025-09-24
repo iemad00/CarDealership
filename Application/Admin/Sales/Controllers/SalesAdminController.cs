@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using CarDealership.Services.Admin;
 using CarDealership.Attributes;
 using CarDealership.Application.Admin.Sales.Dtos;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Controllers.Admin;
 
@@ -25,7 +26,7 @@ public class SalesAdminController : ControllerBase
     {
         var resp = await _service.ProcessSaleAsync(request);
         if (!resp.Success) return BadRequest(new { success = false, message = resp.Message, data = new { } });
-        return Ok(new { success = true, message = resp.Message, data = new { purchaseId = resp.PurchaseId } });
+        return Ok(new { success = true, message = resp.Message, data = new { purchaseId = resp.Data!.PurchaseId } });
     }
 }
 

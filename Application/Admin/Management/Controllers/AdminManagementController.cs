@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CarDealership.Models.DTOs.Admin;
 using CarDealership.Services.Admin;
+using CarDealership.Application.Common.Dtos;
 using CarDealership.Attributes;
 
 namespace CarDealership.Controllers.Admin;
@@ -28,7 +29,7 @@ public class AdminManagementController : ControllerBase
         {
             return BadRequest(new { success = false, message = response.Message, data = new { } });
         }
-        return Ok(response);
+        return Ok(new { success = true, message = response.Message, data = response.Data });
     }
 
     [HttpPost("assign-role")]

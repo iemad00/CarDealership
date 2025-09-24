@@ -1,10 +1,8 @@
 namespace CarDealership.Application.User.Purchases.Dtos;
 
-public class CreatePurchaseRequestResponse
+public class CreatePurchaseRequestData
 {
-    public bool Success { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public int? RequestId { get; set; }
+    public int RequestId { get; set; }
 }
 
 

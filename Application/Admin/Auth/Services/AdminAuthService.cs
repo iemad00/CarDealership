@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using CarDealership.Data;
 using CarDealership.Models;
 using CarDealership.Models.DTOs.Admin;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
@@ -27,7 +28,7 @@ public class AdminAuthService : IAdminAuthService
         _logger = logger;
     }
 
-    public async Task<SendOtpResponse> SendOtpAsync(SendOtpRequest request)
+    public async Task<Response> SendOtpAsync(SendOtpRequest request)
     {
         try
         {
@@ -36,7 +37,7 @@ public class AdminAuthService : IAdminAuthService
 
             if (adminUser == null)
             {
-                return new SendOtpResponse
+                return new Response
                 {
                     Success = false,
                     Message = "Admin user not found. Please contact super admin."
@@ -45,7 +46,7 @@ public class AdminAuthService : IAdminAuthService
 
             if (!adminUser.IsActive)
             {
-                return new SendOtpResponse
+                return new Response
                 {
                     Success = false,
                     Message = "Admin account is deactivated. Please contact super admin."
@@ -54,7 +55,7 @@ public class AdminAuthService : IAdminAuthService
 
             await _otpService.GenerateAndStoreOtpAsync(request.Phone);
             
-            return new SendOtpResponse
+            return new Response
             {
                 Success = true,
                 Message = "OTP sent successfully"
@@ -63,7 +64,7 @@ public class AdminAuthService : IAdminAuthService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error sending OTP to admin {Phone}", request.Phone);
-            return new SendOtpResponse
+            return new Response
             {
                 Success = false,
                 Message = "Failed to send OTP"

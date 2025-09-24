@@ -1,10 +1,11 @@
 using CarDealership.Application.Admin.Sales.Dtos;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
 public interface ISalesAdminService
 {
-    Task<ProcessSaleResponse> ProcessSaleAsync(ProcessSaleRequest request);
+    Task<Response<ProcessSaleData>> ProcessSaleAsync(ProcessSaleRequest request);
 }
 
 

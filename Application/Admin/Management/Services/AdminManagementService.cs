@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using CarDealership.Data;
 using CarDealership.Models;
 using CarDealership.Models.DTOs.Admin;
+using CarDealership.Application.Common.Dtos;
 
 namespace CarDealership.Services.Admin;
 
@@ -18,7 +19,7 @@ public class AdminManagementService : IAdminManagementService
         _logger = logger;
     }
 
-    public async Task<CreateAdminUserResponse> CreateAdminUserAsync(CreateAdminUserRequest request)
+    public async Task<Response<AdminUserDto>> CreateAdminUserAsync(CreateAdminUserRequest request)
     {
         try
         {
@@ -27,7 +28,7 @@ public class AdminManagementService : IAdminManagementService
             
             if (existingAdmin != null)
             {
-                return new CreateAdminUserResponse
+                return new Response<AdminUserDto>
                 {
                     Success = false,
                     Message = "Admin user with this phone or email already exists"
@@ -73,17 +74,17 @@ public class AdminManagementService : IAdminManagementService
 
             var createdAdmin = await GetAdminUserByIdAsync(adminUser.Id);
 
-            return new CreateAdminUserResponse
+            return new Response<AdminUserDto>
             {
                 Success = true,
                 Message = "Admin user created successfully",
-                User = createdAdmin
+                Data = createdAdmin
             };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating admin user");
-            return new CreateAdminUserResponse
+            return new Response<AdminUserDto>
             {
                 Success = false,
                 Message = "Failed to create admin user"
@@ -91,14 +92,14 @@ public class AdminManagementService : IAdminManagementService
         }
     }
 
-    public async Task<AssignRoleResponse> AssignRoleToAdminAsync(AssignRoleRequest request)
+    public async Task<Response> AssignRoleToAdminAsync(AssignRoleRequest request)
     {
         try
         {
             var adminUser = await _context.AdminUsers.FindAsync(request.AdminUserId);
             if (adminUser == null)
             {
-                return new AssignRoleResponse
+                return new Response
                 {
                     Success = false,
                     Message = "Admin user not found"
@@ -108,7 +109,7 @@ public class AdminManagementService : IAdminManagementService
             var role = await _context.Roles.FindAsync(request.RoleId);
             if (role == null || !role.IsActive)
             {
-                return new AssignRoleResponse
+                return new Response
                 {
                     Success = false,
                     Message = "Role not found or inactive"
@@ -137,7 +138,7 @@ public class AdminManagementService : IAdminManagementService
             _logger.LogInformation("Role {RoleId} assigned to admin user {AdminUserId}", 
                 request.RoleId, request.AdminUserId);
 
-            return new AssignRoleResponse
+            return new Response
             {
                 Success = true,
                 Message = "Role assigned successfully"
@@ -146,7 +147,7 @@ public class AdminManagementService : IAdminManagementService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error assigning role to admin user");
-            return new AssignRoleResponse
+            return new Response
             {
                 Success = false,
                 Message = "Failed to assign role"
