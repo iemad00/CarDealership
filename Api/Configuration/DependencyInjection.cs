@@ -29,8 +29,6 @@ public static class DependencyInjection
             .Bind(configuration.GetSection(PasscodeHashingOptions.SectionName))
             .ValidateDataAnnotations();
 
-        services.AddHostedService<StartupService>();
-
         return services;
     }
 
@@ -113,6 +111,7 @@ public static class DependencyInjection
         // Seeding services
         services.AddScoped<CarDealership.Data.Seeds.ISeedService, CarDealership.Data.Seeds.SuperAdminSeedService>();
         services.AddScoped<CarDealership.Data.Seeds.SuperAdminSeedService>();
+        services.AddScoped<CarDealership.Data.Seeds.DemoSeedService>();
         services.AddScoped<CarDealership.Data.Seeds.DataSeeder>();
 
         return services;

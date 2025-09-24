@@ -194,6 +194,23 @@
                     },
                     "item": [
                         {
+                            "name": "Seed Demo Data",
+                            "auth": { "type": "noauth" },
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/seed",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "seed"
+                                    ]
+                                }
+                            }
+                        },
+                        {
                             "name": "Create Admin User",
                             "request": {
                                 "method": "POST",
