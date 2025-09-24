@@ -644,11 +644,11 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/{{version}}/vehicles?make=Toyota&minPrice=50000",
+                                    "raw": "{{baseUrl}}/api/{{version}}/vehicles?make=Ford&minPrice=50000",
                                     "host": ["{{baseUrl}}"],
                                     "path": ["api", "{{version}}", "vehicles"],
                                     "query": [
-                                        { "key": "make", "value": "Toyota" },
+                                        { "key": "make", "value": "Ford" },
                                         { "key": "minPrice", "value": "50000" }
                                     ]
                                 }

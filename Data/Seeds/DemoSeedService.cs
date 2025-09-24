@@ -186,7 +186,6 @@ public class DemoSeedService
             new() { Name = "Update Sales", Description = "Modify sales records", Resource = "sales", Action = "update", CreatedAt = DateTime.UtcNow, IsActive = true },
             new() { Name = "Delete Sales", Description = "Delete sales records", Resource = "sales", Action = "delete", CreatedAt = DateTime.UtcNow, IsActive = true },
             new() { Name = "Read Permissions", Description = "View permissions", Resource = "permissions", Action = "read", CreatedAt = DateTime.UtcNow, IsActive = true },
-            new() { Name = "Read Roles", Description = "View roles and permissions", Resource = "roles", Action = "read", CreatedAt = DateTime.UtcNow, IsActive = true },
             new() { Name = "Read Customers", Description = "View customers", Resource = "customers", Action = "read", CreatedAt = DateTime.UtcNow, IsActive = true }
         };
 
