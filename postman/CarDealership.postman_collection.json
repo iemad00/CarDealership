@@ -8,7 +8,7 @@
         { "key": "baseUrl", "value": "https://localhost:8080" },
         { "key": "version", "value": "v1" },
         { "key": "userPhone", "value": "0555555555" },
-        { "key": "adminPhone", "value": "0555000000" },
+        { "key": "adminPhone", "value": "0555555555" },
         { "key": "userLoginToken", "value": "" },
         { "key": "adminLoginToken", "value": "" },
         { "key": "userAccessToken", "value": "" },
