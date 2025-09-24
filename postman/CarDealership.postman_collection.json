@@ -1,0 +1,718 @@
+{
+    "info": {
+        "name": "CarDealership API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_postman_id": "a8e7b28b-1111-4222-9333-cardealer"
+    },
+    "variable": [
+        { "key": "baseUrl", "value": "https://localhost:7001" },
+        { "key": "version", "value": "v1" },
+        { "key": "userPhone", "value": "0555555555" },
+        { "key": "adminPhone", "value": "0555000000" },
+        { "key": "userLoginToken", "value": "" },
+        { "key": "adminLoginToken", "value": "" },
+        { "key": "userAccessToken", "value": "" },
+        { "key": "adminAccessToken", "value": "" },
+        { "key": "userRefreshToken", "value": "" },
+        { "key": "adminRefreshToken", "value": "" }
+    ],
+    "item": [
+        {
+            "name": "Admin",
+            "item": [
+                {
+                    "name": "Auth",
+                    "item": [
+                        {
+                            "name": "Send OTP",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/auth/send",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "auth",
+                                        "send"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phone\": \"{{adminPhone}}\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try {",
+                                            "  const body = pm.request?.body?.raw ? JSON.parse(pm.request.body.raw) : null;",
+                                            "  if (body?.phone) pm.environment.set('adminPhone', body.phone);",
+                                            "} catch (e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Verify OTP",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/auth/verify",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "auth",
+                                        "verify"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phone\": \"{{adminPhone}}\",\n  \"otp\": \"123456\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const res = pm.response.json(); if (res?.loginToken) pm.environment.set('adminLoginToken', res.loginToken); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Authenticate",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/auth/authenticate",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "auth",
+                                        "authenticate"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"loginToken\": \"{{adminLoginToken}}\",\n  \"passcode\": \"123456\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const res = pm.response.json(); if (res?.accessToken) pm.environment.set('adminAccessToken', res.accessToken); if (res?.refreshToken) pm.environment.set('adminRefreshToken', res.refreshToken); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Refresh Token",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/auth/refresh",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "auth",
+                                        "refresh"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"refreshToken\": \"{{adminRefreshToken}}\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const res = pm.response.json(); if (res?.accessToken) pm.environment.set('adminAccessToken', res.accessToken); if (res?.refreshToken) pm.environment.set('adminRefreshToken', res.refreshToken); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Management",
+                    "auth": {
+                        "type": "bearer",
+                        "bearer": [
+                            {
+                                "key": "token",
+                                "value": "{{adminAccessToken}}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "item": [
+                        {
+                            "name": "Create Admin User",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/create-admin",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "admin-management",
+                                        "create-admin"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phone\": \"0555000000\",\n  \"name\": \"Admin\",\n  \"email\": \"admin@example.com\",\n  \"roleIds\": []\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "Assign Role",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/assign-role",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "admin-management",
+                                        "assign-role"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"adminUserId\": 1,\n  \"roleId\": 1\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "List Admin Users",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/admin-users",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "admin-management",
+                                        "admin-users"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Admin User",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/admin-users/1",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "admin-management",
+                                        "admin-users",
+                                        "1"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Roles",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/roles",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "admin-management",
+                                        "roles"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Permissions",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/permissions",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "admin-management",
+                                        "permissions"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Inventory",
+                    "auth": {
+                        "type": "bearer",
+                        "bearer": [
+                            {
+                                "key": "token",
+                                "value": "{{adminAccessToken}}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "item": [
+                        {
+                            "name": "Add Vehicle",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/inventory/vehicles",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "inventory",
+                                        "vehicles"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"make\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"year\": 2023,\n  \"price\": 95000,\n  \"kilometers\": 15000,\n  \"color\": \"White\",\n  \"description\": \"GCC spec\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "Patch Vehicle",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/inventory/vehicles/1",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "inventory",
+                                        "vehicles",
+                                        "1"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"model\": \"Camry SE\"\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Customers",
+                    "auth": {
+                        "type": "bearer",
+                        "bearer": [
+                            {
+                                "key": "token",
+                                "value": "{{adminAccessToken}}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "item": [
+                        {
+                            "name": "List Customers",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/customers",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "customers"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Sales",
+                    "auth": {
+                        "type": "bearer",
+                        "bearer": [
+                            {
+                                "key": "token",
+                                "value": "{{adminAccessToken}}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "item": [
+                        {
+                            "name": "Process Sale",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/sales/process",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "dashboard",
+                                        "sales",
+                                        "process"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"purchaseRequestId\": 1\n}"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "item": [
+                {
+                    "name": "Auth",
+                    "item": [
+                        {
+                            "name": "Send OTP",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/auth/send",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "auth",
+                                        "send"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phone\": \"{{userPhone}}\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const body = pm.request?.body?.raw ? JSON.parse(pm.request.body.raw) : null; if (body?.phone) pm.environment.set('userPhone', body.phone); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Verify OTP",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/auth/verify",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "auth",
+                                        "verify"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phone\": \"{{userPhone}}\",\n  \"otp\": \"123456\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const res = pm.response.json(); if (res?.loginToken) pm.environment.set('userLoginToken', res.loginToken); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Authenticate",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/auth/authenticate",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "auth",
+                                        "authenticate"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"loginToken\": \"{{userLoginToken}}\",\n  \"passcode\": \"123456\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const res = pm.response.json(); if (res?.accessToken) pm.environment.set('userAccessToken', res.accessToken); if (res?.refreshToken) pm.environment.set('userRefreshToken', res.refreshToken); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Refresh Token",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/auth/refresh",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "auth",
+                                        "refresh"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"refreshToken\": \"{{userRefreshToken}}\"\n}"
+                                }
+                            },
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "try { const res = pm.response.json(); if (res?.accessToken) pm.environment.set('userAccessToken', res.accessToken); if (res?.refreshToken) pm.environment.set('userRefreshToken', res.refreshToken); } catch(e) {}"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Browse",
+                    "item": [
+                        {
+                            "name": "Browse Vehicles",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/vehicles?make=Toyota&minPrice=50000",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["api", "{{version}}", "vehicles"],
+                                    "query": [
+                                        { "key": "make", "value": "Toyota" },
+                                        { "key": "minPrice", "value": "50000" }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Vehicle Details",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/vehicles/1",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "vehicles",
+                                        "1"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Purchases",
+                    "auth": {
+                        "type": "bearer",
+                        "bearer": [
+                            {
+                                "key": "token",
+                                "value": "{{userAccessToken}}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "item": [
+                        {
+                            "name": "Create Purchase Request",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/purchases/request",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "purchases",
+                                        "request"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"vehicleId\": 1\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "Purchase History",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/{{version}}/purchases/history",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "api",
+                                        "{{version}}",
+                                        "purchases",
+                                        "history"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

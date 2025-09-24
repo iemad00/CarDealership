@@ -21,6 +21,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<AdminUserRole> AdminUserRoles { get; set; }
     public DbSet<Vehicle> Vehicles { get; set; }
+    public DbSet<PurchaseRequest> PurchaseRequests { get; set; }
+    public DbSet<Purchase> Purchases { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

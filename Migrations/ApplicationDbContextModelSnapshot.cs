@@ -181,6 +181,65 @@ namespace CarDealership.Migrations
                     b.ToTable("Permissions");
                 });
 
+            modelBuilder.Entity("CarDealership.Models.Purchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("PriceAtSale")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("PurchasedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "VehicleId");
+
+                    b.ToTable("Purchases");
+                });
+
+            modelBuilder.Entity("CarDealership.Models.PurchaseRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("QuotedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "VehicleId", "Status");
+
+                    b.ToTable("PurchaseRequests");
+                });
+
             modelBuilder.Entity("CarDealership.Models.Role", b =>
                 {
                     b.Property<int>("Id")
