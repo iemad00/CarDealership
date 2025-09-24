@@ -31,8 +31,8 @@ public class SalesAdminService : ISalesAdminService
                 return new ProcessSaleResponse { Success = false, Message = "Vehicle not found or inactive" };
             }
 
-            // mark request completed and create purchase
             pr.Status = "Completed";
+
             var purchase = new Models.Purchase
             {
                 UserId = pr.UserId,
@@ -41,6 +41,9 @@ public class SalesAdminService : ISalesAdminService
                 PurchasedAt = DateTime.UtcNow
             };
             _context.Purchases.Add(purchase);
+
+            vehicle.IsActive = false;
+
             await _context.SaveChangesAsync();
 
             return new ProcessSaleResponse { Success = true, Message = "Sale processed", PurchaseId = purchase.Id };

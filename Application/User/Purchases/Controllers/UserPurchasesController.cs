@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using CarDealership.Services.User;
 using CarDealership.Application.User.Purchases.Dtos;
+using CarDealership.Attributes;
 
 namespace CarDealership.Controllers.User;
 
 [ApiController]
 [Route("purchases")]
 [ApiVersion("1.0")]
-[Authorize]
+[RequireUser]
 public class UserPurchasesController : ControllerBase
 {
     private readonly IUserPurchaseService _service;
@@ -22,11 +22,7 @@ public class UserPurchasesController : ControllerBase
     [HttpPost("request")]
     public async Task<IActionResult> RequestPurchase([FromBody] CreatePurchaseRequestRequest request)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
-        {
-            return Unauthorized(new { success = false, message = "Unauthorized", data = new { } });
-        }
+        var userId = (int)HttpContext.Items["UserId"]!;
         var resp = await _service.CreatePurchaseRequestAsync(userId, request);
         if (!resp.Success) return BadRequest(new { success = false, message = resp.Message, data = new { } });
         return Ok(new { success = true, message = resp.Message, data = new { requestId = resp.RequestId } });
@@ -35,11 +31,7 @@ public class UserPurchasesController : ControllerBase
     [HttpGet("history")]
     public async Task<IActionResult> History()
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
-        {
-            return Unauthorized(new { success = false, message = "Unauthorized", data = new { } });
-        }
+        var userId = (int)HttpContext.Items["UserId"]!;
         var list = await _service.GetPurchaseHistoryAsync(userId);
         return Ok(new { success = true, message = "", data = list });
     }

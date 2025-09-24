@@ -53,16 +53,17 @@ public class UserPurchaseService : IUserPurchaseService
 
     public async Task<List<PurchaseHistoryItemDto>> GetPurchaseHistoryAsync(int userId)
     {
-        return await _context.Purchases
+        return await _context.PurchaseRequests
             .AsNoTracking()
-            .Where(p => p.UserId == userId)
-            .OrderByDescending(p => p.PurchasedAt)
-            .Select(p => new PurchaseHistoryItemDto
+            .Where(pr => pr.UserId == userId)
+            .OrderByDescending(pr => pr.RequestedAt)
+            .Select(pr => new PurchaseHistoryItemDto
             {
-                Id = p.Id,
-                VehicleId = p.VehicleId,
-                PriceAtSale = p.PriceAtSale,
-                PurchasedAt = p.PurchasedAt
+                Id = pr.Id,
+                VehicleId = pr.VehicleId,
+                QuotedPrice = pr.QuotedPrice,
+                RequestedAt = pr.RequestedAt,
+                Status = pr.Status
             })
             .ToListAsync();
     }
