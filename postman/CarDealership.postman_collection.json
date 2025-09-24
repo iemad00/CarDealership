@@ -5,7 +5,7 @@
         "_postman_id": "a8e7b28b-1111-4222-9333-cardealer"
     },
     "variable": [
-        { "key": "baseUrl", "value": "https://localhost:7001" },
+        { "key": "baseUrl", "value": "https://localhost:8080" },
         { "key": "version", "value": "v1" },
         { "key": "userPhone", "value": "0555555555" },
         { "key": "adminPhone", "value": "0555000000" },
@@ -286,7 +286,7 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/admin-users/1",
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/admin-management/admin-users/:id",
                                     "host": ["{{baseUrl}}"],
                                     "path": [
                                         "api",
@@ -294,7 +294,7 @@
                                         "dashboard",
                                         "admin-management",
                                         "admin-users",
-                                        "1"
+                                        ":id"
                                     ]
                                 }
                             }
@@ -386,7 +386,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/inventory/vehicles/1",
+                                    "raw": "{{baseUrl}}/api/{{version}}/dashboard/inventory/vehicles/:id",
                                     "host": ["{{baseUrl}}"],
                                     "path": [
                                         "api",
@@ -394,7 +394,7 @@
                                         "dashboard",
                                         "inventory",
                                         "vehicles",
-                                        "1"
+                                        ":id"
                                     ]
                                 },
                                 "body": {
@@ -659,13 +659,13 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/{{version}}/vehicles/1",
+                                    "raw": "{{baseUrl}}/api/{{version}}/vehicles/:id",
                                     "host": ["{{baseUrl}}"],
                                     "path": [
                                         "api",
                                         "{{version}}",
                                         "vehicles",
-                                        "1"
+                                        ":id"
                                     ]
                                 }
                             }

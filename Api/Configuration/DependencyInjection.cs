@@ -19,7 +19,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(
                 configuration.GetConnectionString("DefaultConnection"),
-                ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection"))
+                ServerVersion.Parse("8.0.34")
             ));
 
         services.AddSingleton<IConnectionMultiplexer>(provider =>

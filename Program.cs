@@ -36,10 +36,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseGlobalErrorHandler();
 
-app.UseHttpsRedirection();
+var enableHttpsRedirection = builder.Configuration.GetValue<bool>("EnableHttpsRedirection");
+if (enableHttpsRedirection)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Liveness probe
+app.MapGet("/health", () => "OK");
 
 app.MapControllers();
 
